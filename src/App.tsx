@@ -78,6 +78,40 @@ export default function App() {
     setIsModalOpen(true);
   };
 
+  const handleFinishPurchase = () => {
+    if (!selectedOption) return;
+
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('pt-BR');
+    const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    
+    const receipt = `
+--------------------------------
+    CASTELO ROCK FEST 2026
+--------------------------------
+DATA: ${dateStr} ${timeStr}
+LOCAL: Arari - MA
+--------------------------------
+ITEM: ${selectedOption.name.toUpperCase()}
+${selectedOption.includesShirt ? `TAMANHO: ${selectedSize}\n` : ''}VALOR: R$ ${selectedOption.price},00
+--------------------------------
+PAGAMENTO: PIX
+CHAVE: ${PIX_KEY}
+--------------------------------
+OBRIGADO PELA PREFERÊNCIA!
+--------------------------------
+    *ENVIE O COMPROVANTE*
+    *DO PIX JUNTO COM*
+    *ESTA MENSAGEM*
+--------------------------------`.trim();
+
+    const encodedReceipt = encodeURIComponent(receipt);
+    const whatsappUrl = `https://wa.me/55${PIX_KEY}?text=${encodedReceipt}`;
+    
+    window.open(whatsappUrl, '_blank');
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-zinc-100 font-sans selection:bg-red-600 selection:text-white">
       {/* Navigation */}
@@ -95,6 +129,7 @@ export default function App() {
               <a href="#inicio" className="text-sm font-medium hover:text-red-500 transition-colors">Início</a>
               <a href="#lineup" className="text-sm font-medium hover:text-red-500 transition-colors">Lineup</a>
               <a href="#ingressos" className="text-sm font-medium hover:text-red-500 transition-colors">Ingressos</a>
+              <a href="#patrocinio" className="text-sm font-medium hover:text-red-500 transition-colors">Patrocínio</a>
               <button 
                 onClick={() => document.getElementById('ingressos')?.scrollIntoView({ behavior: 'smooth' })}
                 className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full text-sm font-bold transition-all transform hover:scale-105"
@@ -123,6 +158,7 @@ export default function App() {
               <a href="#inicio" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold">Início</a>
               <a href="#lineup" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold">Lineup</a>
               <a href="#ingressos" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold">Ingressos</a>
+              <a href="#patrocinio" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold">Patrocínio</a>
               <button 
                 onClick={() => { setIsMenuOpen(false); document.getElementById('ingressos')?.scrollIntoView({ behavior: 'smooth' }); }}
                 className="bg-red-600 text-white py-4 rounded-xl text-xl font-bold"
@@ -294,6 +330,41 @@ export default function App() {
         </div>
       </section>
 
+      {/* Sponsors Section */}
+      <section id="patrocinio" className="py-24 bg-[#0a0a0a]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic mb-4">Nossos <span className="text-red-600">Patrocinadores</span></h2>
+            <p className="text-zinc-500 max-w-xl mx-auto">Marcas que acreditam e fortalecem a cena rock em nossa região.</p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div 
+                key={i}
+                className="aspect-video bg-zinc-900/50 border border-zinc-800 rounded-2xl flex items-center justify-center group hover:border-red-600/30 transition-all"
+              >
+                <div className="text-zinc-700 font-black uppercase italic tracking-widest text-sm group-hover:text-zinc-500 transition-colors">
+                  Sua Marca Aqui
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-16 text-center">
+            <p className="text-zinc-400 mb-6 font-medium">Quer ver sua marca no Castelo Rock Fest?</p>
+            <a 
+              href="https://wa.me/5598984595785" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-red-600 font-bold uppercase italic hover:text-red-500 transition-colors"
+            >
+              Seja um patrocinador <ExternalLink size={16} />
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-black py-12 border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -405,10 +476,10 @@ export default function App() {
                 </div>
 
                 <button 
-                  onClick={() => setIsModalOpen(false)}
-                  className="w-full mt-8 py-4 bg-zinc-100 text-zinc-900 rounded-2xl font-black uppercase italic hover:bg-white transition-all"
+                  onClick={handleFinishPurchase}
+                  className="w-full mt-8 py-4 bg-red-600 text-white rounded-2xl font-black uppercase italic hover:bg-red-700 transition-all flex items-center justify-center gap-2"
                 >
-                  Concluído
+                  Enviar para WhatsApp <ExternalLink size={18} />
                 </button>
               </div>
             </motion.div>
