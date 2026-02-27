@@ -60,6 +60,15 @@ const TICKET_OPTIONS: TicketOption[] = [
 
 const PIX_KEY = "98984595785";
 
+const SPONSORS = [
+  {
+    name: 'ZapMove',
+    logo: 'https://storage.googleapis.com/static.run.app/aistudio/aqqphe5ttdhturxm5hh3sg/33/logo.png',
+    link: 'https://zapmove.vercel.app/'
+  },
+  // Outros patrocinadores podem ser adicionados aqui
+];
+
 export default function App() {
   const [selectedOption, setSelectedOption] = useState<TicketOption | null>(null);
   const [selectedSize, setSelectedSize] = useState<ShirtSize>('M');
@@ -339,7 +348,23 @@ OBRIGADO PELA PREFERÊNCIA!
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+            {SPONSORS.map((sponsor, idx) => (
+              <a 
+                key={idx}
+                href={sponsor.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="aspect-video bg-white border border-zinc-800 rounded-2xl flex items-center justify-center group hover:border-red-600/30 transition-all p-4"
+              >
+                <img 
+                  src={sponsor.logo} 
+                  alt={sponsor.name} 
+                  className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform"
+                  referrerPolicy="no-referrer"
+                />
+              </a>
+            ))}
+            {[...Array(6 - SPONSORS.length)].map((_, i) => (
               <div 
                 key={i}
                 className="aspect-video bg-zinc-900/50 border border-zinc-800 rounded-2xl flex items-center justify-center group hover:border-red-600/30 transition-all"
